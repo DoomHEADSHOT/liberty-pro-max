@@ -680,7 +680,9 @@ Like everything in `out/`, none of it is in the repository.
   protection layer and Games for Windows Live answered offline, thread
   priorities, and the FusionFix and ZolikaPatch fixes.
 - `src/launcher_mac.mm` and `src/launcher_ios.mm` are the two launchers;
-  `src/launcher_options.h` the options they share.
+  `src/launcher_options.h` the options they share. On macOS, the General tab
+  can enable SDL's GameController mouse deltas (`SDL_MAC_USE_GCMOUSE`) for
+  native mouse input.
 - The Metal renderer, audio and Windows layer live in x86recomp, on the
   [`liberty`](https://github.com/Awis13/x86recomp/tree/liberty) branch pinned
   in `X86RECOMP`.

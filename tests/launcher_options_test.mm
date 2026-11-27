@@ -79,12 +79,32 @@ void TestDefaults() {
   EXPECT([defaults[@"PhoneCheats"] isEqual:@NO]);
   EXPECT([defaults[@"PlayerFullDamage"] isEqual:@NO]);
   EXPECT([defaults[@"EpisodeRadioOwn"] isEqual:@YES]);
+  EXPECT([defaults[kNativeMouseKey] isEqual:@NO]);
   EXPECT([defaults[kModsKey] isEqual:@YES]);
   EXPECT([defaults[kSystemLanguageKey] isEqual:@YES]);  // the game in the system's language
   for (NSString* k in DefaultsTurnedOff()) {
     EXPECT(Find(k) != nullptr);
     EXPECT(Find(k) && !Find(k)->on);
   }
+}
+
+void TestNativeMouseHint() {
+  NSUserDefaults* d = [[NSUserDefaults alloc] initWithSuiteName:@"launcher_options_test.native_mouse"];
+  [d removePersistentDomainForName:@"launcher_options_test.native_mouse"];
+  RegisterDefaults(d);
+  unsetenv("SDL_MAC_USE_GCMOUSE");
+  ApplyOptions(d);
+  const char* hint = std::getenv("SDL_MAC_USE_GCMOUSE");
+  EXPECT(hint && std::strcmp(hint, "0") == 0);
+  [d setBool:YES forKey:kNativeMouseKey];
+  ApplyOptions(d);
+  hint = std::getenv("SDL_MAC_USE_GCMOUSE");
+  EXPECT(hint && std::strcmp(hint, "1") == 0);
+  [d setBool:NO forKey:kNativeMouseKey];
+  ApplyOptions(d);
+  hint = std::getenv("SDL_MAC_USE_GCMOUSE");
+  EXPECT(hint && std::strcmp(hint, "0") == 0);
+  [d removePersistentDomainForName:@"launcher_options_test.native_mouse"];
 }
 
 // The Apple TV's own, over those: with no settings screen there, the
@@ -261,6 +281,7 @@ int main() {
     TestExtras();
     TestListsApart();
     TestDefaults();
+    TestNativeMouseHint();
     TestClearedOnce();
     TestSharpening();
     TestConsoleGamma();

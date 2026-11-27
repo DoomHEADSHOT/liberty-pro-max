@@ -163,6 +163,7 @@ void StopPrewarm() {
 @property(strong) NSPopUpButton* sharpening;
 @property(strong) NSPopUpButton* consoleGamma;
 @property(strong) NSButton* hud;
+@property(strong) NSButton* nativeMouse;
 @property(strong) NSButton* skipIntro;
 @property(strong) NSButton* continueSave;
 @property(strong) NSButton* overNotch;
@@ -271,6 +272,11 @@ constexpr CGFloat kWindowWidth = 760, kNoteWidth = 520;
                                   action:nil];
   self.hud.state = [d boolForKey:kHudKey] ? NSControlStateValueOn : NSControlStateValueOff;
 
+  self.nativeMouse = [NSButton checkboxWithTitle:@"Use native macOS mouse input (GameController)"
+                                          target:nil
+                                          action:nil];
+  self.nativeMouse.state = [d boolForKey:kNativeMouseKey] ? NSControlStateValueOn : NSControlStateValueOff;
+
   self.skipIntro = [NSButton checkboxWithTitle:@"Skip the logo and legal screens" target:nil action:nil];
   self.skipIntro.state = [d boolForKey:kSkipIntroKey] ? NSControlStateValueOn : NSControlStateValueOff;
   // macOS keeps a full screen Space below a display's notch; a borderless
@@ -303,6 +309,7 @@ constexpr CGFloat kWindowWidth = 760, kNoteWidth = 520;
     @[ NSGridCell.emptyContentView, self.overNotch ],
     @[ [self label:@"Vertical sync:"], self.vsync ],
     @[ [self label:@"Frame limit:"], self.frameLimit ],
+    @[ [self label:@"Mouse:"], self.nativeMouse ],
     @[ [self label:@"Anti-aliasing:"], self.antialiasing ],
     @[ NSGridCell.emptyContentView, self.denoiseNote ],
     @[ [self label:@"MetalFX resolution:"], self.metalfxScale ],
@@ -580,6 +587,7 @@ constexpr CGFloat kWindowWidth = 760, kNoteWidth = 520;
   Store(d, kTaaSharpeningKey, @(self.sharpening.indexOfSelectedItem));
   Store(d, kConsoleGammaKey, @(self.consoleGamma.indexOfSelectedItem));
   Store(d, kHudKey, @(self.hud.state == NSControlStateValueOn));
+  Store(d, kNativeMouseKey, @(self.nativeMouse.state == NSControlStateValueOn));
   Store(d, kSkipIntroKey, @(self.skipIntro.state == NSControlStateValueOn));
   Store(d, kContinueKey, @(self.continueSave.state == NSControlStateValueOn));
   Store(d, kModsKey, @(self.mods.state == NSControlStateValueOn));
