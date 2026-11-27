@@ -48,6 +48,7 @@ inline const char* OutputCurveFor(NSInteger mode) {
 }
 NSString* const kHudKey = @"PerformanceOverlay";
 NSString* const kSkipKey = @"SkipLauncher";
+NSString* const kNativeMouseKey = @"NativeMouse";
 NSString* const kSkipIntroKey = @"SkipIntro";
 NSString* const kContinueKey = @"ContinueLastSave";
 // The game in the system's language (YES) or always in English (NO).
@@ -332,7 +333,7 @@ NSString* ModsFolder() {
 // The defaults of every option (the player's choices override them).
 void RegisterDefaults(NSUserDefaults* d) {
   NSMutableDictionary* defaults =
-      [NSMutableDictionary dictionaryWithDictionary:@{kHudKey : @YES, kTouchKey : @YES, kSkipIntroKey : @YES, kFastLoadingKey : @YES, kModsKey : @YES, kStunPunchKey : @YES, kExecutionsKey : @YES, kContinueKey : @YES, kSystemLanguageKey : @YES, kMetalFXScaleKey : @1, kTaaSharpeningKey : @2, kAntiAliasingKey : @3}];
+      [NSMutableDictionary dictionaryWithDictionary:@{kHudKey : @YES, kTouchKey : @YES, kNativeMouseKey : @NO, kSkipIntroKey : @YES, kFastLoadingKey : @YES, kModsKey : @YES, kStunPunchKey : @YES, kExecutionsKey : @YES, kContinueKey : @YES, kSystemLanguageKey : @YES, kMetalFXScaleKey : @1, kTaaSharpeningKey : @2, kAntiAliasingKey : @3}];
   for (const Fix& f : kFixes) defaults[f.key] = @(f.on);
   for (const ShaderChoice& sc : kShaderChoices) defaults[sc.key] = @(sc.def);
   [d registerDefaults:defaults];
@@ -391,6 +392,7 @@ void ApplyOptions(NSUserDefaults* d) {
   else
     unsetenv("RECOMP_OUTPUT_CURVE");
   setenv("MTL_HUD_ENABLED", [d boolForKey:kHudKey] ? "1" : "0", 1);
+  setenv("SDL_MAC_USE_GCMOUSE", [d boolForKey:kNativeMouseKey] ? "1" : "0", 1);
   setenv("GTAIV_SKIP_INTRO", [d boolForKey:kSkipIntroKey] ? "1" : "0", 1);
   // Render targets made larger (RECOMP_RT_BOOST): the shadow maps (the
   // cascades' atlas 8192x2048, 2048 and 1024 maps), the reflections (512
